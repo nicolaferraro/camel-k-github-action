@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const exec = require('@actions/exec');
 
 async function run() {
-    return await exec.exec('./01-setup.sh');
+    await exec.exec('echo "Hello World!"');
 }
 
 
