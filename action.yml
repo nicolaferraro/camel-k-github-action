@@ -11,7 +11,7 @@ inputs:
     default: '1.0.0-M4'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'github-action/index.js'
 branding:
   icon: 'octagon'  
   color: 'green'
