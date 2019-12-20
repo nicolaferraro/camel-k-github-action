@@ -2,9 +2,11 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const exec = require('@actions/exec');
 
-try {
-    await exec.exec('./01-setup.sh');
-
-} catch (error) {
-  core.setFailed(error.message);
+async function run() {
+    return await exec.exec('./01-setup.sh');
 }
+
+
+run().catch(error => {
+    core.setFailed(error.message);
+})
