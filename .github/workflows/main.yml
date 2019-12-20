@@ -24,3 +24,5 @@ jobs:
           kubectl get pod
           sleep 5
         done
+        echo "Integration started!"
+        kubectl get pod
