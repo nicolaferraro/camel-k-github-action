@@ -20,6 +20,11 @@
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/exec": "^1.0.2",
-    "@actions/github": "^2.0.0"
+    "@actions/github": "^2.0.0",
+    "@actions/io": "^1.0.1",
+    "@actions/tool-cache": "^1.1.2",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "util": "^0.12.1"
   }
 }

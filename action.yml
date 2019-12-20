@@ -1,5 +1,17 @@
 name: 'Camel K'
-description: 'Creates a Kubernetes Playground for running Camel K integrations'
+description: 'Provides a Kubernetes playground environment and Camel K tools'
+inputs:
+  kindVersion:
+    description: 'The version of KinD to use'
+    required: true
+    default: 'v0.6.1'
+  version:
+    description: 'The version of Camel K to use'
+    required: true
+    default: '1.0.0-M4'
 runs:
   using: 'node12'
   main: 'index.js'
+branding:
+  icon: 'octagon'  
+  color: 'green'
