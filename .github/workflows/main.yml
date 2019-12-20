@@ -18,7 +18,7 @@ jobs:
 
         kamel run test/simple.groovy
 
-        while [ "$(kubectl get pod -l camel.apache.org/integration=simple -o 'jsonpath={range .items[*]}{.status.conditions[?(@.=="Ready")].status}'" != "1" ]
+        while [ "$(kubectl get pod -l camel.apache.org/integration=simple -o 'jsonpath={range .items[*]}{.status.conditions[?(@.=="Ready")].status}')" != "1" ]
         do
           echo "Waiting for integration to start"
           kubectl get pod
