@@ -89,7 +89,7 @@ sudo mount --make-shared /
 sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 sudo service docker start
-wget https://github.com/openshift/origin/releases/download/${version}/openshift-origin-client-tools-v${version}-${commit}-linux-64bit.tar.gz
+wget https://github.com/openshift/origin/releases/download/${version}/openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz
 tar xvzOf openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz > oc.bin
 sudo mv oc.bin /usr/local/bin/oc
 sudo chmod 755 /usr/local/bin/oc
