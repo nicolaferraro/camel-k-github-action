@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Setup Camel K Playground
-      uses: nicolaferraro/camel-k-github-action@master
+      uses: nicolaferraro/camel-k-github-action@dev
       with:
         cluster: openshift
     - name: Checkout code
