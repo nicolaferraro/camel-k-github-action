@@ -79,14 +79,14 @@ async function startKinDContainerRegistry() {
 }
 
 async function getOC(version, commit) {
-    exec.exec(`sudo ip link set docker0 promisc on`)
-    exec.exec(`sudo mount --make-shared /`)
-    exec.exec(`sudo service docker stop`)
-    exec.exec(`sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null`)
-    exec.exec(`sudo service docker start`)
-    exec.exec(`echo 1`)
-    exec.exec(`cat /etc/docker/daemon.json`)
-    exec.exec(`echo 2`)
+    await exec.exec(`sudo ip link set docker0 promisc on`)
+    await exec.exec(`sudo mount --make-shared /`)
+    await exec.exec(`sudo service docker stop`)
+    await exec.exec(`sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null`)
+    await exec.exec(`sudo service docker start`)
+    await exec.exec(`echo 1`)
+    await exec.exec(`cat /etc/docker/daemon.json`)
+    await exec.exec(`echo 2`)
 }
 
 async function printClusterInfo(kubeCLI) {
