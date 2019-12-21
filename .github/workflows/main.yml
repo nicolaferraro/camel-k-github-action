@@ -2,8 +2,12 @@
 name: Camel K Playground Test
 
 on:
-- push
-- pull_request
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
 
 jobs:
   playground-test:
