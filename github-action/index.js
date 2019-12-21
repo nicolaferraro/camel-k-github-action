@@ -10,7 +10,6 @@ const { promisify } = require('util')
 const writeFileAsync = promisify(fs.writeFile)
 
 async function run() {
-    
     var clusterType = core.getInput('clusterType');
     var kubeCLI;
     if (clusterType.toLowerCase() == "kubernetes") {
@@ -22,8 +21,8 @@ async function run() {
         await startKinD(registry);
     } else if (clusterType.toLowerCase() == "openshift") {
         kubeCLI = "oc";
-
-        await getOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
+        
+        await startOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
 
     } else {
         throw new `unknown cluster type ${clusterType}`
@@ -78,15 +77,55 @@ async function startKinDContainerRegistry() {
     }
 }
 
-async function getOC(version, commit) {
-    await exec.exec(`sudo ip link set docker0 promisc on`)
-    await exec.exec(`sudo mount --make-shared /`)
-    await exec.exec(`sudo service docker stop`)
-    await exec.exec(`sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null`)
-    await exec.exec(`sudo service docker start`)
-    await exec.exec(`echo 1`)
-    await exec.exec(`cat /etc/docker/daemon.json`)
-    await exec.exec(`echo 2`)
+async function startOC(version, commit) {
+    var startOCScript = `
+#!/bin/bash
+
+# set docker0 to promiscuous mode
+sudo ip link set docker0 promisc on
+
+# Download and install the oc binary
+sudo mount --make-shared /
+sudo service docker stop
+sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
+sudo service docker start
+wget https://github.com/openshift/origin/releases/download/${version}/openshift-origin-client-tools-v${version}-${commit}-linux-64bit.tar.gz
+tar xvzOf openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz > oc.bin
+sudo mv oc.bin /usr/local/bin/oc
+sudo chmod 755 /usr/local/bin/oc
+
+# Figure out this host's IP address
+IP_ADDR="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
+
+# Start OpenShift
+oc cluster up --public-hostname=$IP_ADDR
+
+oc login -u system:admin
+
+# Wait until we have a ready node in openshift
+TIMEOUT=0
+TIMEOUT_COUNT=60
+until [ $TIMEOUT -eq $TIMEOUT_COUNT ]; do
+  if [ -n "$(oc get nodes | grep Ready)" ]; then
+    break
+  fi
+
+  echo "openshift is not up yet"
+  let TIMEOUT=TIMEOUT+1
+  sleep 5
+done
+
+if [ $TIMEOUT -eq $TIMEOUT_COUNT ]; then
+  echo "Failed to start openshift"
+  exit 1
+fi
+
+echo "openshift is deployed and reachable"
+oc describe nodes
+    `
+    await writeFileAsync('startOC.sh', startOCScript)
+    await exec.exec("chmod a+x ./startOC.sh")
+    await exec.exec("./startOC.sh")
 }
 
 async function printClusterInfo(kubeCLI) {

@@ -1,7 +1,9 @@
 
 name: Camel K Playground Test
 
-on: [push]
+on:
+- push
+- pull_request
 
 jobs:
   playground-test:

@@ -12,7 +12,7 @@ inputs:
   openshiftVersion:
     description: 'The version of OpenShift to use'
     required: true
-    default: '3.11.0'
+    default: 'v3.11.0'
   openshiftCommit:
     description: 'The commit hash of OpenShift'
     required: true
