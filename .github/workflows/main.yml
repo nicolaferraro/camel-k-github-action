@@ -10,7 +10,7 @@ jobs:
     - name: Setup Camel K Playground
       uses: nicolaferraro/camel-k-github-action@master
       with:
-          clusterType: openshift
+        clusterType: openshift
     - name: Checkout code
       uses: actions/checkout@v1
     - name: Test Integration
