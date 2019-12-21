@@ -1,7 +1,7 @@
 name: 'Camel K'
 description: 'Provides a Kubernetes playground environment and Camel K tools'
 inputs:
-  clusterType:
+  cluster:
     description: 'The type of cluster to start ("kubernetes", "openshift")'
     required: true
     default: 'kubernetes'

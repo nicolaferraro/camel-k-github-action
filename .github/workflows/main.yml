@@ -11,6 +11,8 @@ jobs:
     steps:
     - name: Setup Camel K Playground
       uses: nicolaferraro/camel-k-github-action@master
+      with:
+        cluster: openshift
     - name: Checkout code
       uses: actions/checkout@v1
     - name: Test Integration

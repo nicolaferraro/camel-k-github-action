@@ -10,22 +10,22 @@ const { promisify } = require('util')
 const writeFileAsync = promisify(fs.writeFile)
 
 async function run() {
-    var clusterType = core.getInput('clusterType');
+    var cluster = core.getInput('cluster');
     var kubeCLI;
-    if (clusterType.toLowerCase() == "kubernetes") {
+    if (cluster.toLowerCase() == "kubernetes") {
         kubeCLI = "kubectl";
         await getKinD(core.getInput('kindVersion'));
         await exec.exec('kind --version');
     
         var registry = await startKinDContainerRegistry();
         await startKinD(registry);
-    } else if (clusterType.toLowerCase() == "openshift") {
+    } else if (cluster.toLowerCase() == "openshift") {
         kubeCLI = "oc";
-        
+
         await startOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
 
     } else {
-        throw new `unknown cluster type ${clusterType}`
+        throw new `unknown cluster type ${cluster}`
     }
 
     await printClusterInfo(kubeCLI);
