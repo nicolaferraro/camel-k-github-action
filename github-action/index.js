@@ -11,24 +11,19 @@ const writeFileAsync = promisify(fs.writeFile)
 
 async function run() {
     var cluster = core.getInput('cluster');
-    var kubeCLI;
+
     if (cluster.toLowerCase() == "kubernetes") {
-        kubeCLI = "kubectl";
         await getKinD(core.getInput('kindVersion'));
         await exec.exec('kind --version');
     
         var registry = await startKinDContainerRegistry();
         await startKinD(registry);
     } else if (cluster.toLowerCase() == "openshift") {
-        kubeCLI = "oc";
-
         await startOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
 
     } else {
         throw new `unknown cluster type ${cluster}`
     }
-
-    await printClusterInfo(kubeCLI);
 
     await getKamel(core.getInput('version'));
     await exec.exec("kamel version");
@@ -70,6 +65,9 @@ async function startKinDContainerRegistry() {
     
     core.exportVariable(`KAMEL_INSTALL_REGISTRY`, `${ip}:${port}`)
     core.exportVariable(`KAMEL_INSTALL_REGISTRY_INSECURE`, `true`)
+
+    await exec.exec(`${kubeCLI} cluster-info`)
+    await exec.exec(`${kubeCLI} describe nodes`)
 
     return {
         ip: ip,
@@ -126,11 +124,6 @@ oc describe nodes
     await writeFileAsync('startOC.sh', startOCScript)
     await exec.exec("chmod a+x ./startOC.sh")
     await exec.exec("./startOC.sh")
-}
-
-async function printClusterInfo(kubeCLI) {
-    await exec.exec(`${kubeCLI} cluster-info`)
-    await exec.exec(`${kubeCLI} describe nodes`)
 }
 
 async function getKamel(version) {
