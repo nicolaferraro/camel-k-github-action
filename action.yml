@@ -1,17 +1,30 @@
 name: 'Camel K'
 description: 'Provides a Kubernetes playground environment and Camel K tools'
 inputs:
+  clusterType:
+    description: 'The type of cluster to start ("kubernetes", "openshift")'
+    required: true
+    default: 'kubernetes'
   kindVersion:
     description: 'The version of KinD to use'
     required: true
     default: 'v0.6.1'
+  openshiftVersion:
+    description: 'The version of OpenShift to use'
+    required: true
+    default: '3.11.0'
+  openshiftCommit:
+    description: 'The commit hash of OpenShift'
+    required: true
+    default: '0cbc58b'
   version:
     description: 'The version of Camel K to use'
     required: true
     default: '1.0.0-M4'
+  
 runs:
   using: 'node12'
   main: 'github-action/index.js'
 branding:
   icon: 'octagon'  
-  color: 'green'
+  color: 'yellow'

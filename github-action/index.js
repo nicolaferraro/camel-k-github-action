@@ -10,14 +10,26 @@ const { promisify } = require('util')
 const writeFileAsync = promisify(fs.writeFile)
 
 async function run() {
+    
+    var clusterType = core.getInput('clusterType');
+    var kubeCLI;
+    if (clusterType.toLowerCase() == "kubernetes") {
+        kubeCLI = "kubectl";
+        await getKinD(core.getInput('kindVersion'));
+        await exec.exec('kind --version');
+    
+        var registry = await startKinDContainerRegistry();
+        await startKinD(registry);
+    } else if (clusterType.toLowerCase() == "openshift") {
+        kubeCLI = "oc";
 
-    await getKinD(core.getInput('kindVersion'));
-    await exec.exec('kind --version');
+        await getOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
 
-    var registry = await startKinDContainerRegistry();
-    await startKinD(registry);
+    } else {
+        throw new `unknown cluster type ${clusterType}`
+    }
 
-    await printClusterInfo();
+    await printClusterInfo(kubeCLI);
 
     await getKamel(core.getInput('version'));
     await exec.exec("kamel version");
@@ -45,23 +57,6 @@ async function startKinD(registry) {
     await exec.exec("kind create cluster --config=./config.yml")
 }
 
-async function getKamel(version) {
-    var url = `https://github.com/apache/camel-k/releases/download/${version}/camel-k-client-${version}-linux-64bit.tar.gz`;
-    console.log("Downloading kamel from " + url);
-    downloadPath = await tc.downloadTool(url);
-    var binPath = "/home/runner/bin";
-    await io.mkdirP(binPath);
-    await tc.extractTar(downloadPath, ".")
-    await io.mv("./kamel", path.join(binPath, "kamel"));
-
-    core.addPath(binPath);
-}
-
-async function printClusterInfo() {
-    await exec.exec("kubectl cluster-info")
-    await exec.exec("kubectl describe nodes")
-}
-
 async function startKinDContainerRegistry() {
     var port = 5000
     await exec.exec(`docker run -d -p=${port}:5000 --restart=always --name=kind-registry registry:2`);
@@ -83,6 +78,31 @@ async function startKinDContainerRegistry() {
     }
 }
 
+async function getOC(version, commit) {
+    exec.exec(`sudo ip link set docker0 promisc on`)
+    exec.exec(`sudo mount --make-shared /`)
+    exec.exec(`sudo service docker stop`)
+    exec.exec(`sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null`)
+    exec.exec(`sudo service docker start`)
+    exec.exec(`echo daje...`)
+}
+
+async function printClusterInfo(kubeCLI) {
+    await exec.exec(`${kubeCLI} cluster-info`)
+    await exec.exec(`${kubeCLI} describe nodes`)
+}
+
+async function getKamel(version) {
+    var url = `https://github.com/apache/camel-k/releases/download/${version}/camel-k-client-${version}-linux-64bit.tar.gz`;
+    console.log("Downloading kamel from " + url);
+    downloadPath = await tc.downloadTool(url);
+    var binPath = "/home/runner/bin";
+    await io.mkdirP(binPath);
+    await tc.extractTar(downloadPath, ".")
+    await io.mv("./kamel", path.join(binPath, "kamel"));
+
+    core.addPath(binPath);
+}
 
 run().catch(error => {
     core.setFailed(error.message);
