@@ -95,6 +95,11 @@ sudo chmod 755 /usr/local/bin/oc
 # Figure out this host's IP address
 IP_ADDR="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
 
+# Setup cluster dir
+sudo mkdir -p /home/runner/lib/oc
+sudo chmod 777 /home/runner/lib/oc
+cd /home/runner/lib/oc
+
 # Start OpenShift
 oc cluster up --public-hostname=$IP_ADDR
 
