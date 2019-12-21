@@ -84,7 +84,9 @@ async function getOC(version, commit) {
     exec.exec(`sudo service docker stop`)
     exec.exec(`sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null`)
     exec.exec(`sudo service docker start`)
+    exec.exec(`echo 1`)
     exec.exec(`cat /etc/docker/daemon.json`)
+    exec.exec(`echo 2`)
 }
 
 async function printClusterInfo(kubeCLI) {
