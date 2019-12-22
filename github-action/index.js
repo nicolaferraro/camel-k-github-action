@@ -86,8 +86,6 @@ sudo ip link set docker0 promisc on
 sudo mount --make-shared /
 
 
-#sudo apt-get install resolvconf
-sudo echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 
 
 sudo service docker stop
@@ -107,7 +105,8 @@ sudo chmod 777 /home/runner/lib/oc
 cd /home/runner/lib/oc
 
 # Start OpenShift
-oc cluster up --public-hostname=$IP_ADDR
+#oc cluster up --public-hostname=$IP_ADDR
+oc cluster up --routing-suffix="127.0.0.1.nip.io"
 
 oc login -u system:admin
 
