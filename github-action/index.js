@@ -85,8 +85,6 @@ async function startOC(version, commit) {
 # Download and install the oc binary
 #sudo mount --make-shared /
 
-sudo systemctl stop systemd-resolved.service
-sudo rm /etc/resolv.conf
 sudo ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 
@@ -121,7 +119,7 @@ until [ $TIMEOUT -eq $TIMEOUT_COUNT ]; do
   fi
 
   echo "openshift is not up yet"
-  let TIMEOUT=TIMEOUT+1
+  TIMEOUT=$((TIMEOUT+1))
   sleep 5
 done
 
