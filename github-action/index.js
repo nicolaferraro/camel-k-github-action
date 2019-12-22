@@ -80,10 +80,10 @@ async function startOC(version, commit) {
 #!/bin/bash
 
 # set docker0 to promiscuous mode
-sudo ip link set docker0 promisc on
+#sudo ip link set docker0 promisc on
 
 # Download and install the oc binary
-sudo mount --make-shared /
+#sudo mount --make-shared /
 sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 sudo service docker start
@@ -93,7 +93,7 @@ sudo mv oc.bin /usr/local/bin/oc
 sudo chmod 755 /usr/local/bin/oc
 
 # Figure out this host's IP address
-IP_ADDR="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
+#IP_ADDR="$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)"
 
 # Setup cluster dir
 sudo mkdir -p /home/runner/lib/oc
@@ -101,7 +101,8 @@ sudo chmod 777 /home/runner/lib/oc
 cd /home/runner/lib/oc
 
 # Start OpenShift
-oc cluster up --public-hostname=$IP_ADDR
+#oc cluster up --public-hostname=$IP_ADDR
+oc cluster up
 
 oc login -u system:admin
 
