@@ -88,9 +88,15 @@ sudo mount --make-shared /
 
 
 
-sudo service docker stop
-sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
-sudo service docker start
+#sudo service docker stop
+#sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
+#sudo service docker start
+
+sudo sed -i '/ExecStart=/c\\ExecStart=\\/usr\\/bin\\/dockerd -H fd:\\/\\/ --insecure-registry 172.30.0.0\\/16' /lib/systemd/system/docker.service
+sudo systemctl daemon-reload
+sudo service docker restart
+
+
 wget https://github.com/openshift/origin/releases/download/${version}/openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz
 tar xvzOf openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz > oc.bin
 sudo mv oc.bin /usr/local/bin/oc
