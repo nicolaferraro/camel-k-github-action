@@ -85,9 +85,6 @@ async function startOC(version, commit) {
 # Download and install the oc binary
 #sudo mount --make-shared /
 
-sudo ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
-
-
 sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 sudo service docker start
@@ -109,6 +106,20 @@ cd /home/runner/lib/oc
 oc cluster up
 
 oc login -u system:admin
+
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-dns
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  upstreamNameservers: |-
+    ["8.8.8.8", "8.8.4.4"]
+EOF
+
 
 # Wait until we have a ready node in openshift
 TIMEOUT=0
