@@ -85,6 +85,11 @@ sudo ip link set docker0 promisc on
 # Download and install the oc binary
 sudo mount --make-shared /
 
+
+#sudo apt-get install resolvconf
+sudo echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
+
+
 sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 sudo service docker start
