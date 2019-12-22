@@ -85,7 +85,9 @@ async function startOC(version, commit) {
 # Download and install the oc binary
 #sudo mount --make-shared /
 
-sudo sed -i 's/127.0.0.53/8.8.8.8/g' /etc/resolv.conf
+sudo systemctl stop systemd-resolved.service
+sudo rm /etc/resolv.conf
+sudo ln -s /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 
 
 sudo service docker stop
