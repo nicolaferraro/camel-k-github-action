@@ -13,6 +13,9 @@ jobs:
   playground-test:
     runs-on: ubuntu-latest
     steps:
+    - name: check
+      run: |
+        cat /etc/resolv.conf 
     - name: Setup Camel K Playground
       uses: nicolaferraro/camel-k-github-action@dev
       with:
