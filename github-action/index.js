@@ -4,6 +4,7 @@ const exec = require('@actions/exec');
 const tc = require('@actions/tool-cache');
 const io = require('@actions/io');
 const path = require('path')
+const axios = require('axios');
 const fs = require('fs')
 const { promisify } = require('util')
 
@@ -19,7 +20,8 @@ async function run() {
         var registry = await startKinDContainerRegistry();
         await startKinD(registry);
     } else if (cluster.toLowerCase() == "openshift") {
-        await startOC(core.getInput('openshiftVersion'), core.getInput('openshiftCommit'))
+        downloadURL = getOCDownloadURL(core.getInput('openshiftVersion'));
+        await startOC(downloadURL);
 
     } else {
         throw new `unknown cluster type ${cluster}`
@@ -75,7 +77,18 @@ async function startKinDContainerRegistry() {
     }
 }
 
-async function startOC(version, commit) {
+async function getOCDownloadURL(version) {
+    const tagInfoUrl = `https://api.github.com/repos/openshift/origin/releases/tags/${version}`;
+    const tagInfo = await axios.get(tagInfoUrl);
+    const downloadUrl = tagInfo.data.assets.find(
+      asset =>
+        asset.name.indexOf('linux') >= 0 && asset.name.indexOf('client') >= 0
+    ).browser_download_url;
+    core.info(`OpenShift Cluster version found at: ${downloadUrl}`);
+    return downloadUrl;
+}
+
+async function startOC(downloadURL) {
     var startOCScript = `
 #!/bin/bash
 
@@ -94,8 +107,8 @@ sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 sudo service docker start
 
-wget https://github.com/openshift/origin/releases/download/${version}/openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz
-tar xvzOf openshift-origin-client-tools-${version}-${commit}-linux-64bit.tar.gz > oc.bin
+wget -O client.tar.gz ${downloadURL}
+tar xvzOf client.tar.gz > oc.bin
 sudo mv oc.bin /usr/local/bin/oc
 sudo chmod 755 /usr/local/bin/oc
 

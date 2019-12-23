@@ -2,7 +2,7 @@ name: 'Camel K'
 description: 'Provides a Kubernetes playground environment and Camel K tools'
 inputs:
   cluster:
-    description: 'The type of cluster to start ("kubernetes", "openshift")'
+    description: 'The type of cluster to start ("kubernetes", "openshift", "none")'
     required: true
     default: 'kubernetes'
   kindVersion:
@@ -13,10 +13,6 @@ inputs:
     description: 'The version of OpenShift to use'
     required: true
     default: 'v3.11.0'
-  openshiftCommit:
-    description: 'The commit hash of OpenShift'
-    required: true
-    default: '0cbc58b'
   version:
     description: 'The version of Camel K to use'
     required: true
