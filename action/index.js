@@ -53,6 +53,9 @@ async function startKinD(registry) {
     await exec.exec("cat ./config.yml")
 
     await exec.exec("kind create cluster --config=./config.yml")
+
+    await exec.exec(`kubectl cluster-info`)
+    await exec.exec(`kubectl describe nodes`)
 }
 
 async function startKinDContainerRegistry() {
@@ -69,9 +72,6 @@ async function startKinDContainerRegistry() {
     
     core.exportVariable(`KAMEL_INSTALL_REGISTRY`, `${ip}:${port}`)
     core.exportVariable(`KAMEL_INSTALL_REGISTRY_INSECURE`, `true`)
-
-    await exec.exec(`kubectl cluster-info`)
-    await exec.exec(`kubectl describe nodes`)
 
     return {
         ip: ip,
