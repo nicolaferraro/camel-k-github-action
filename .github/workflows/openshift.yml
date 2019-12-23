@@ -1,5 +1,5 @@
 
-name: Camel K Playground Test
+name: Camel K Playground Test OpenShift
 
 on:
   pull_request:
