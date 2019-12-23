@@ -20,7 +20,7 @@ inputs:
   
 runs:
   using: 'node12'
-  main: 'github-action/index.js'
+  main: 'index.js'
 branding:
   icon: 'octagon'  
   color: 'yellow'
