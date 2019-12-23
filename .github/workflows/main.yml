@@ -30,7 +30,7 @@ jobs:
         do
           echo "Waiting for integration to start"
           kubectl get pod
-          kubectl logs -l camel.apache.org/component=operator --tail 50 || true
+          #kubectl logs -l camel.apache.org/component=operator --tail 50 || true
           sleep 5
         done
         echo "Integration started!"
