@@ -23,6 +23,8 @@ async function run() {
         downloadURL = await getOCDownloadURL(core.getInput('openshiftVersion'));
         await startOC(downloadURL);
 
+    } else if (cluster.toLowerCase() == "none") {
+        core.info(`No cluster will be started up`);
     } else {
         throw new `unknown cluster type ${cluster}`
     }
