@@ -123,7 +123,7 @@ sudo chmod 777 /home/runner/lib/oc
 cd /home/runner/lib/oc
 
 # Start OpenShift
-oc cluster up --public-hostname=$IP_ADDR --enable=-sample-templates,-web-console
+oc cluster up --public-hostname=$IP_ADDR
 
 oc login -u system:admin
 
