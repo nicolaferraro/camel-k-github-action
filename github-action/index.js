@@ -86,9 +86,11 @@ sudo ip link set docker0 promisc on
 sudo mount --make-shared /
 
 
-sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf 
+sudo apt-get install resolvconf
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolvconf/resolv.conf.d/head > /dev/null
+echo "nameserver 8.8.4.4" | sudo tee /etc/resolvconf/resolv.conf.d/head > /dev/null
 sudo service systemd-resolved stop
-sudo service systemd-resolved start
+sudo service resolvconf restart
 
 sudo service docker stop
 sudo echo '{"insecure-registries": ["172.30.0.0/16"]}' | sudo tee /etc/docker/daemon.json > /dev/null
