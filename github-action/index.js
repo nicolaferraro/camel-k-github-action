@@ -20,7 +20,7 @@ async function run() {
         var registry = await startKinDContainerRegistry();
         await startKinD(registry);
     } else if (cluster.toLowerCase() == "openshift") {
-        downloadURL = getOCDownloadURL(core.getInput('openshiftVersion'));
+        downloadURL = await getOCDownloadURL(core.getInput('openshiftVersion'));
         await startOC(downloadURL);
 
     } else {
