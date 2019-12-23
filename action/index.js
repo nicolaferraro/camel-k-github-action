@@ -70,8 +70,8 @@ async function startKinDContainerRegistry() {
     core.exportVariable(`KAMEL_INSTALL_REGISTRY`, `${ip}:${port}`)
     core.exportVariable(`KAMEL_INSTALL_REGISTRY_INSECURE`, `true`)
 
-    await exec.exec(`${kubeCLI} cluster-info`)
-    await exec.exec(`${kubeCLI} describe nodes`)
+    await exec.exec(`kubectl cluster-info`)
+    await exec.exec(`kubectl describe nodes`)
 
     return {
         ip: ip,
