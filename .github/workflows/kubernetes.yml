@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Setup Camel K Playground
-      uses: nicolaferraro/camel-k-github-action/action@dev2
+      uses: nicolaferraro/camel-k-github-action@master
       with:
         cluster: kubernetes
     - name: Checkout code
