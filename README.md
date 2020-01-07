@@ -1,21 +1,5 @@
-# Hello world javascript action
+# Camel K Action POC
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+![](https://github.com/nicolaferraro/camel-k-github-action/workflows/Kubernetes/badge.svg)
+![](https://github.com/nicolaferraro/camel-k-github-action/workflows/OpenShift/badge.svg)
 
-## Inputs
-
-### `who-to-greet`
-
-**Required** The name of the person to greet. Default `"World"`.
-
-## Outputs
-
-### `time`
-
-The time we greeted you.
-
-## Example usage
-
-uses: actions/hello-world-javascript-action@v1
-with:
-  who-to-greet: 'Mona the Octocat'
