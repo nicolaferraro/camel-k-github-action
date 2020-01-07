@@ -1,0 +1,35 @@
+
+name: Camel K Playground Test Kubernetes
+
+on:
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+
+jobs:
+  playground-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Camel K Playground
+      uses: nicolaferraro/camel-k-github-action/action@dev
+      with:
+        cluster: kubernetes
+    - name: Checkout code
+      uses: actions/checkout@v1
+    - name: Test Integration
+      run: |
+        # just kamel install from 1.0.0-RC1
+        kamel install --registry $KAMEL_INSTALL_REGISTRY --registry-insecure true
+        kamel run test/simple.groovy
+        while [ "$(kubectl get pod -l camel.apache.org/integration=simple -o 'jsonpath={range .items[*]}{.status.conditions[?(@.type=="Ready")].status}')" != "True" ]
+        do
+          echo "Waiting for integration to start"
+          kubectl get pod
+          #kubectl logs -l camel.apache.org/component=operator --tail 50 || true
+          sleep 5
+        done
+        echo "Integration started!"
+        kubectl get pod
