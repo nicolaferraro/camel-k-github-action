@@ -1,4 +1,4 @@
-name: 'Camel K'
+name: 'Apache Camel K'
 description: 'Provides a Kubernetes playground environment and Camel K tools'
 inputs:
   cluster:
