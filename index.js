@@ -33,7 +33,7 @@ async function run() {
     }
 
     await getKamel(core.getInput('version'));
-    await exec.exec("kamel version");
+    await exec.exec("kamel version || true");
 
 }
 
