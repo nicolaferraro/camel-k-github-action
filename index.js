@@ -25,6 +25,9 @@ async function run() {
 
     } else if (cluster.toLowerCase() == "none") {
         core.info(`No cluster will be started up`);
+        core.info(`Adding OC client tools`);
+        downloadURL = await getOCDownloadURL(core.getInput('openshiftVersion'));
+        installOC(downloadURL);
     } else {
         throw new `unknown cluster type ${cluster}`
     }
@@ -88,6 +91,20 @@ async function getOCDownloadURL(version) {
     ).browser_download_url;
     core.info(`OpenShift Cluster version found at: ${downloadUrl}`);
     return downloadUrl;
+}
+
+async function installOC(downloadURL) {
+    var installOCScript = `
+#!/bin/bash
+# Download and install the oc binary
+wget -O client.tar.gz ${downloadURL}
+tar xvzOf client.tar.gz > oc.bin
+sudo mv oc.bin /usr/local/bin/oc
+sudo chmod 755 /usr/local/bin/oc
+    `
+    await writeFileAsync('installOC.sh', installOCScript)
+    await exec.exec("chmod a+x ./installOC.sh")
+    await exec.exec("./installOC.sh")
 }
 
 async function startOC(downloadURL) {
